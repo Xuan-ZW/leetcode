@@ -376,43 +376,251 @@ class Solution:
                     res += i - temp.pop(0)
         return res
 
-    def middleNode(self, head: ListNode) -> ListNode:
+    # def middleNode(self, head: ListNode) -> ListNode:
+    #     """
+    #     给定一个带有头结点 head 的非空单链表，返回链表的中间结点。
+    #     如果有两个中间结点，则返回第二个中间结点。   
+
+    #     示例 1：
+
+    #     输入：[1,2,3,4,5]
+    #     输出：此列表中的结点 3 (序列化形式：[3,4,5])
+    #     返回的结点值为 3 。 (测评系统对该结点序列化表述是 [3,4,5])。
+    #     注意，我们返回了一个 ListNode 类型的对象 ans，这样：
+    #     ans.val = 3, ans.next.val = 4, ans.next.next.val = 5, 以及 ans.next.next.next = NULL.
+    #     示例 2：
+
+    #     输入：[1,2,3,4,5,6]
+    #     输出：此列表中的结点 4 (序列化形式：[4,5,6])
+    #     由于该列表有两个中间结点，值分别为 3 和 4，我们返回第二个结点。
+    #     """
+    #     slow = fast = head
+    #     while fast and fast.next:
+    #         slow = slow.next
+    #         fast = fast.next.next
+    #     return slow
+
+
+    def massage(self, nums: List[int]) -> int:
         """
-        给定一个带有头结点 head 的非空单链表，返回链表的中间结点。
-        如果有两个中间结点，则返回第二个中间结点。   
+        一个有名的按摩师会收到源源不断的预约请求，每个预约都可以选择接或不接。在每次预约服务之间要有休息时间，
+        因此她不能接受相邻的预约。给定一个预约请求序列，替按摩师找到最优的预约集合（总预约时间最长），返回总的分钟数。
+
+        注意：本题相对原题稍作改动
+        示例 1：
+
+        输入： [1,2,3,1]
+        输出： 4
+        解释： 选择 1 号预约和 3 号预约，总时长 = 1 + 3 = 4。
+        示例 2：
+
+        输入： [2,7,9,3,1]
+        输出： 12
+        解释： 选择 1 号预约、 3 号预约和 5 号预约，总时长 = 2 + 9 + 1 = 12。
+        示例 3：
+
+        输入： [2,1,4,5,3,1,1,3]
+        输出： 12
+        解释： 选择 1 号预约、 3 号预约、 5 号预约和 8 号预约，总时长 = 2 + 4 + 3 + 3 = 12。
+
+        
+        """
+        if not nums:
+            return 0
+
+        dp = [0] * len(nums)
+        # dp[0] = nums[0]
+        dp0 = 0
+        dp1 = nums[0]
+        for i in range(1, len(nums)):
+            tdp0 = max(dp0, dp1)
+            tdp1 = dp0 + nums[i]
+            dp0, dp1 = tdp0, tdp1
+        return max(dp0, dp1)
+
+        
+
+    
+    def surfaceArea(self, grid: List[List[int]]) -> int:
+        """
+
+        在 N * N 的网格上，我们放置一些 1 * 1 * 1  的立方体。
+
+        每个值 v = grid[i][j] 表示 v 个正方体叠放在对应单元格 (i, j) 上。
+
+        请你返回最终形体的表面积。
+
+         
 
         示例 1：
 
-        输入：[1,2,3,4,5]
-        输出：此列表中的结点 3 (序列化形式：[3,4,5])
-        返回的结点值为 3 。 (测评系统对该结点序列化表述是 [3,4,5])。
-        注意，我们返回了一个 ListNode 类型的对象 ans，这样：
-        ans.val = 3, ans.next.val = 4, ans.next.next.val = 5, 以及 ans.next.next.next = NULL.
-        示例 2：
+        输入：[[2]]
+        输出：10
+        示例 2：
 
-        输入：[1,2,3,4,5,6]
-        输出：此列表中的结点 4 (序列化形式：[4,5,6])
-        由于该列表有两个中间结点，值分别为 3 和 4，我们返回第二个结点。
+        输入：[[1,2],[3,4]]
+        输出：34
+        示例 3：
+
+        输入：[[1,0],[0,2]]
+        输出：16
+        示例 4：
+
+        输入：[[1,1,1],[1,0,1],[1,1,1]]
+        输出：32
+        示例 5：
+
+        输入：[[2,2,2],[2,1,2],[2,2,2]]
+        输出：46
+         
+
+        提示：
+
+        1 <= N <= 50
+        0 <= grid[i][j] <= 50
+
         """
-        slow = fast = head
-        while fast and fast.next:
-            slow = slow.next
-            fast = fast.next.next
-        return slow
 
 
+        row = len(grid)
+        col = len(grid[0])
+        area = 0
+        for i in range(row):
+            for j in range(col):
+                if grid[i][j]>0:
+                    area += grid[i][j] * 4 + 2
+                if i > 0:
+                    area -= min(grid[i][j], grid[i-1][j]) * 2
+                if j > 0:
+                    area -= min(grid[i][j], grid[i][j-1]) * 2
+
+        return area 
+
+    
+    def numRookCaptures(self, board: List[List[str]]) -> int:
+        """
+        在一个 8 x 8 的棋盘上，有一个白色车（rook）。也可能有空方块，白色的象（bishop）和黑色的卒（pawn）。
+        它们分别以字符 “R”，“.”，“B” 和 “p” 给出。大写字符表示白棋，小写字符表示黑棋。
+
+        车按国际象棋中的规则移动：它选择四个基本方向中的一个（北，东，西和南），然后朝那个方向移动，
+        直到它选择停止、到达棋盘的边缘或移动到同一方格来捕获该方格上颜色相反的卒。另外，车不能与其他友方（白色）象进入同一个方格。
+
+        返回车移动中捕获到的卒的数量。
+
+        输入：[[".",".",".",".",".",".",".","."],[".",".",".","p",".",".",".","."],[".",".",".","R",".",".",".","p"],[".",".",".",".",".",".",".","."],[".",".",".",".",".",".",".","."],[".",".",".","p",".",".",".","."],[".",".",".",".",".",".",".","."],[".",".",".",".",".",".",".","."]]
+        输出：3
+        """
+        row = len(board)
+        col = len(board[0])
+        for i in range(row):
+            for j in range(col):
+                if board[i][j] == 'R':
+                    R_i = i
+                    R_j = j
+                    break
+        R_j_right = R_j
+        R_j_left = R_j
+        R_i_up = R_i 
+        R_i_down = R_i
+        count = 0
+
+        # 向右
+
+        # isbishop = False
+        while R_j_right < col:
+            if board[R_i][R_j_right] == 'B':
+                # isbishop = True
+                break
+            if board[R_i][R_j_right] == 'p':
+                count += 1
+                break
+            R_j_right += 1
 
 
+        # 向左
+        # isbishop = False
+        while R_j_left >=0:
+            if board[R_i][R_j_left] == 'B':
+                # isbishop = True
+                break
+            if board[R_i][R_j_left] == 'p':
+                count += 1
+                break
+            R_j_left -= 1
+
+       # 向上
+
+        # isbishop = False
+        while R_i_up >= 0 :
+            if board[R_i_up][R_j] == 'B':
+                # isbishop = True
+                break
+            if board[R_i_up][R_j] == 'p':
+                count += 1
+                break
+            R_i_up -= 1
 
 
+        # 向下 
+        # isbishop = False
+        while R_i_down < row:
+            if board[R_i_down][R_j] == 'B':
+                # isbishop = True
+                break
+            if board[R_i_down][R_j] == 'p':
+                count += 1
+                break
+            R_i_down += 1
+        return count
 
+
+    def hasGroupsSizeX(self, deck: List[int]) -> bool:
+        """
+        给定一副牌，每张牌上都写着一个整数。
+        此时，你需要选定一个数字 X，使我们可以将整副牌按下述规则分成 1 组或更多组：
+
+        每组都有 X 张牌。
+        组内所有的牌上都写着相同的整数。
+        仅当你可选的 X >= 2 时返回 true。
+
+         
+
+        示例 1：
+
+        输入：[1,2,3,4,4,3,2,1]
+        输出：true
+        解释：可行的分组是 [1,1]，[2,2]，[3,3]，[4,4]
+        示例 2：
+
+        输入：[1,1,1,2,2,2,3,3]
+        输出：false
+        解释：没有满足要求的分组。
+        示例 3：
+
+        输入：[1]
+        输出：false
+        解释：没有满足要求的分组。
+        示例 4：
+
+        输入：[1,1]
+        输出：true
+        解释：可行的分组是 [1,1]
+        示例 5：
+
+        输入：[1,1,2,2,2,2]
+        输出：true
+        解释：可行的分组是 [1,1]，[2,2]，[2,2]
+
+        """
+        from fractions import gcd
+        import collections
+        from functools import reduce
+        vals = collections.Counter(deck).values()
+        return reduce(gcd, vals) >= 2
 
 
 
         
-
-
-
 
 
 
@@ -453,7 +661,15 @@ if __name__ == "__main__":
 
     # result = solu.canMeasureWater(3, 5, 4)
 
-    result = solu.minIncrementForUnique([1,2,2])
+    # result = solu.minIncrementForUnique([1,2,2])
+
+    # result = solu.massage([2,1,4,5,3,1,1,3])
+
+    # result = solu.surfaceArea([[2,2,2],[2,1,2],[2,2,2]])
+
+
+    # result = solu.numRookCaptures([[".",".",".",".",".",".",".","."],[".","p","p","p","p","p",".","."],[".","p","p","B","p","p",".","."],[".","p","B","R","B","p",".","."],[".","p","p","B","p","p",".","."],[".","p","p","p","p","p",".","."],[".",".",".",".",".",".",".","."],[".",".",".",".",".",".",".","."]])
+    result = solu.hasGroupsSizeX([1,1,2,2,2,2])
 
     print(result)
     
